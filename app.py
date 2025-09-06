@@ -3,8 +3,10 @@ import logging
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
+from flask_login import LoginManager, login_required, current_user
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
+from werkzeug.security import generate_password_hash
 from datetime import datetime
 
 # Configure logging
@@ -15,6 +17,7 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy(model_class=Base)
 mail = Mail()
+login_manager = LoginManager()
 
 # Create the app
 app = Flask(__name__)
@@ -40,6 +43,9 @@ app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'norep
 # Initialize extensions
 db.init_app(app)
 mail.init_app(app)
+login_manager.init_app(app)
+login_manager.login_view = 'admin_login'
+login_manager.login_message = 'Please log in to access the admin area.'
 
 with app.app_context():
     # Import models to ensure tables are created

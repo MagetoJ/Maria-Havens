@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, IntegerField, SelectField, DateField, EmailField
-from wtforms.validators import DataRequired, Email, NumberRange, Optional, ValidationError
+from wtforms import StringField, TextAreaField, IntegerField, SelectField, DateField, EmailField, PasswordField, BooleanField
+from wtforms.validators import DataRequired, Email, NumberRange, Optional, ValidationError, Length, EqualTo
 from datetime import date, timedelta
 
 class BookingForm(FlaskForm):
@@ -23,3 +23,27 @@ class ContactForm(FlaskForm):
     email = EmailField('Email', validators=[DataRequired(), Email()])
     subject = StringField('Subject', validators=[DataRequired()])
     message = TextAreaField('Message', validators=[DataRequired()])
+
+class AdminLoginForm(FlaskForm):
+    email = EmailField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember Me')
+
+class AdminUserForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired(), Length(min=2, max=100)])
+    email = EmailField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField('Confirm Password', validators=[
+        DataRequired(), EqualTo('password', message='Passwords must match.')
+    ])
+    is_admin = BooleanField('Admin Access')
+
+class RoomForm(FlaskForm):
+    name = StringField('Room Name', validators=[DataRequired(), Length(min=2, max=100)])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    price_per_night = IntegerField('Price per Night (KES)', validators=[DataRequired(), NumberRange(min=1)])
+    max_occupancy = IntegerField('Max Occupancy', validators=[DataRequired(), NumberRange(min=1, max=10)])
+    room_size = StringField('Room Size', validators=[Optional()])
+    bed_type = StringField('Bed Type', validators=[Optional()])
+    amenities = TextAreaField('Amenities (comma-separated)', validators=[Optional()])
+    is_available = BooleanField('Available for Booking', default=True)

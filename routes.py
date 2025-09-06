@@ -1,8 +1,10 @@
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_mail import Message
+from flask_login import login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash
 from app import app, db, mail
-from models import Room, Amenity, BookingInquiry, ContactInquiry
-from forms import BookingForm, ContactForm
+from models import Room, Amenity, BookingInquiry, ContactInquiry, User
+from forms import BookingForm, ContactForm, AdminLoginForm, AdminUserForm, RoomForm
 from datetime import datetime, date
 
 @app.route('/')
@@ -161,3 +163,230 @@ def page_not_found(e):
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html'), 500
+
+# ============ ADMIN ROUTES ============
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    """Admin login page"""
+    if current_user.is_authenticated and current_user.is_admin:
+        return redirect(url_for('admin_dashboard'))
+    
+    form = AdminLoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and user.check_password(form.password.data) and user.is_admin:
+            login_user(user, remember=form.remember_me.data)
+            flash('Welcome to the admin dashboard!', 'success')
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('admin_dashboard'))
+        else:
+            flash('Invalid email, password, or insufficient privileges.', 'danger')
+    
+    return render_template('admin/login.html', form=form)
+
+@app.route('/admin/logout')
+@login_required
+def admin_logout():
+    """Admin logout"""
+    logout_user()
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('index'))
+
+@app.route('/admin')
+@app.route('/admin/dashboard')
+@login_required
+def admin_dashboard():
+    """Admin dashboard"""
+    if not current_user.is_admin:
+        flash('Access denied. Admin privileges required.', 'danger')
+        return redirect(url_for('index'))
+    
+    # Get statistics
+    total_rooms = Room.query.count()
+    available_rooms = Room.query.filter_by(is_available=True).count()
+    total_bookings = BookingInquiry.query.count()
+    pending_bookings = BookingInquiry.query.filter_by(status='pending').count()
+    
+    recent_bookings = BookingInquiry.query.order_by(BookingInquiry.created_at.desc()).limit(10).all()
+    
+    return render_template('admin/dashboard.html', 
+                         total_rooms=total_rooms,
+                         available_rooms=available_rooms,
+                         total_bookings=total_bookings,
+                         pending_bookings=pending_bookings,
+                         recent_bookings=recent_bookings)
+
+@app.route('/admin/bookings')
+@login_required
+def admin_bookings():
+    """Admin bookings management"""
+    if not current_user.is_admin:
+        flash('Access denied. Admin privileges required.', 'danger')
+        return redirect(url_for('index'))
+    
+    page = request.args.get('page', 1, type=int)
+    bookings = BookingInquiry.query.order_by(BookingInquiry.created_at.desc()).paginate(
+        page=page, per_page=20, error_out=False)
+    
+    return render_template('admin/bookings.html', bookings=bookings)
+
+@app.route('/admin/booking/update', methods=['POST'])
+@login_required
+def update_booking_status():
+    """Update booking status"""
+    if not current_user.is_admin:
+        return jsonify({'error': 'Access denied'}), 403
+    
+    booking_id = request.form.get('booking_id')
+    new_status = request.form.get('status')
+    
+    if not booking_id or not new_status:
+        flash('Invalid request', 'danger')
+        return redirect(url_for('admin_bookings'))
+    
+    booking = BookingInquiry.query.get_or_404(booking_id)
+    booking.status = new_status
+    db.session.commit()
+    
+    flash(f'Booking status updated to {new_status}', 'success')
+    return redirect(url_for('admin_bookings'))
+
+@app.route('/admin/rooms')
+@login_required
+def admin_rooms():
+    """Admin rooms management"""
+    if not current_user.is_admin:
+        flash('Access denied. Admin privileges required.', 'danger')
+        return redirect(url_for('index'))
+    
+    page = request.args.get('page', 1, type=int)
+    rooms = Room.query.order_by(Room.created_at.desc()).paginate(
+        page=page, per_page=10, error_out=False)
+    
+    return render_template('admin/rooms.html', rooms=rooms)
+
+@app.route('/admin/room/add', methods=['GET', 'POST'])
+@login_required
+def admin_add_room():
+    """Add new room"""
+    if not current_user.is_admin:
+        flash('Access denied. Admin privileges required.', 'danger')
+        return redirect(url_for('index'))
+    
+    form = RoomForm()
+    if form.validate_on_submit():
+        room = Room()
+        room.name = form.name.data
+        room.description = form.description.data
+        room.price_per_night = form.price_per_night.data
+        room.max_occupancy = form.max_occupancy.data
+        room.room_size = form.room_size.data
+        room.bed_type = form.bed_type.data
+        room.amenities = form.amenities.data
+        room.is_available = form.is_available.data
+        
+        db.session.add(room)
+        db.session.commit()
+        
+        flash('Room added successfully!', 'success')
+        return redirect(url_for('admin_rooms'))
+    
+    return render_template('admin/room_form.html', form=form, title='Add Room')
+
+@app.route('/admin/room/<int:room_id>/edit', methods=['GET', 'POST'])
+@login_required
+def admin_edit_room(room_id):
+    """Edit room"""
+    if not current_user.is_admin:
+        flash('Access denied. Admin privileges required.', 'danger')
+        return redirect(url_for('index'))
+    
+    room = Room.query.get_or_404(room_id)
+    form = RoomForm(obj=room)
+    
+    if form.validate_on_submit():
+        room.name = form.name.data
+        room.description = form.description.data
+        room.price_per_night = form.price_per_night.data
+        room.max_occupancy = form.max_occupancy.data
+        room.room_size = form.room_size.data
+        room.bed_type = form.bed_type.data
+        room.amenities = form.amenities.data
+        room.is_available = form.is_available.data
+        
+        db.session.commit()
+        flash('Room updated successfully!', 'success')
+        return redirect(url_for('admin_rooms'))
+    
+    return render_template('admin/room_form.html', form=form, title='Edit Room', room=room)
+
+@app.route('/admin/users')
+@login_required
+def admin_users():
+    """Admin users management (Super Admin only)"""
+    if not current_user.is_admin or not current_user.is_super_admin:
+        flash('Access denied. Super Admin privileges required.', 'danger')
+        return redirect(url_for('admin_dashboard'))
+    
+    page = request.args.get('page', 1, type=int)
+    users = User.query.order_by(User.created_at.desc()).paginate(
+        page=page, per_page=10, error_out=False)
+    
+    return render_template('admin/users.html', users=users)
+
+@app.route('/admin/user/add', methods=['GET', 'POST'])
+@login_required
+def admin_add_user():
+    """Add new admin user (Super Admin only)"""
+    if not current_user.is_admin or not current_user.is_super_admin:
+        flash('Access denied. Super Admin privileges required.', 'danger')
+        return redirect(url_for('admin_dashboard'))
+    
+    form = AdminUserForm()
+    if form.validate_on_submit():
+        # Check if email already exists
+        existing_user = User.query.filter_by(email=form.email.data).first()
+        if existing_user:
+            flash('A user with this email already exists.', 'danger')
+            return render_template('admin/user_form.html', form=form, title='Add Admin User')
+        
+        user = User()
+        user.name = form.name.data
+        user.email = form.email.data
+        user.password_hash = generate_password_hash(form.password.data)
+        user.is_admin = form.is_admin.data
+        user.created_by_id = current_user.id
+        
+        db.session.add(user)
+        db.session.commit()
+        
+        flash('Admin user created successfully!', 'success')
+        return redirect(url_for('admin_users'))
+    
+    return render_template('admin/user_form.html', form=form, title='Add Admin User')
+
+@app.route('/admin/user/<int:user_id>/delete', methods=['POST'])
+@login_required
+def admin_delete_user(user_id):
+    """Delete admin user (Super Admin only)"""
+    if not current_user.is_admin or not current_user.is_super_admin:
+        flash('Access denied. Super Admin privileges required.', 'danger')
+        return redirect(url_for('admin_dashboard'))
+    
+    user = User.query.get_or_404(user_id)
+    
+    # Prevent deleting the main super admin
+    if user.is_super_admin and user.id != current_user.id:
+        flash('Cannot delete another super admin.', 'danger')
+        return redirect(url_for('admin_users'))
+    
+    if user.id == current_user.id:
+        flash('Cannot delete yourself.', 'danger')
+        return redirect(url_for('admin_users'))
+    
+    db.session.delete(user)
+    db.session.commit()
+    
+    flash('Admin user deleted successfully.', 'success')
+    return redirect(url_for('admin_users'))

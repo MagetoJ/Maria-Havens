@@ -13,7 +13,8 @@ from decimal import Decimal
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from app import app, db
-from models import Room, Amenity, BookingInquiry, ContactInquiry
+from models import Room, Amenity, BookingInquiry, ContactInquiry, User
+from werkzeug.security import generate_password_hash
 
 def create_sample_rooms():
     """Create sample room data"""
@@ -138,6 +139,24 @@ def create_sample_amenities():
     db.session.commit()
     print(f"Created {len(amenities)} sample amenities")
 
+def create_main_admin():
+    """Create the main admin user"""
+    # Check if main admin already exists
+    existing_admin = User.query.filter_by(email='jabezmageto78@gmail.com').first()
+    if not existing_admin:
+        main_admin = User(
+            email='jabezmageto78@gmail.com',
+            password_hash=generate_password_hash('lokeshen@58'),
+            name='Jabez Mageto',
+            is_admin=True,
+            is_super_admin=True  # This is the manager who can create other admins
+        )
+        db.session.add(main_admin)
+        db.session.commit()
+        print("Created main admin user: jabezmageto78@gmail.com")
+    else:
+        print("Main admin user already exists")
+
 def main():
     """Main function to initialize database with sample data"""
     with app.app_context():
@@ -150,6 +169,7 @@ def main():
         # Create sample data
         create_sample_rooms()
         create_sample_amenities()
+        create_main_admin()
         
         print("\nDatabase initialization completed successfully!")
         print("You can now run the application with: python main.py")
@@ -157,10 +177,12 @@ def main():
         # Display summary
         room_count = Room.query.count()
         amenity_count = Amenity.query.count()
+        user_count = User.query.count()
         
         print(f"\nDatabase Summary:")
         print(f"- Rooms: {room_count}")
         print(f"- Amenities: {amenity_count}")
+        print(f"- Admin Users: {user_count}")
         print(f"- Booking Inquiries: 0")
         print(f"- Contact Inquiries: 0")
 

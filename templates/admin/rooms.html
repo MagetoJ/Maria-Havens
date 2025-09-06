@@ -1,0 +1,146 @@
+{% extends "admin/base.html" %}
+
+{% block page_title %}Room Management{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5>Room Management</h5>
+    <a href="{{ url_for('admin_add_room') }}" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Add New Room
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        {% if rooms.items %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Room</th>
+                        <th>Details</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for room in rooms.items %}
+                    <tr>
+                        <td>
+                            <strong>{{ room.name }}</strong><br>
+                            <small class="text-muted">{{ room.description[:80] }}{% if room.description|length > 80 %}...{% endif %}</small>
+                        </td>
+                        <td>
+                            <strong>{{ room.max_occupancy }} guests</strong><br>
+                            {% if room.room_size %}<small class="text-muted">{{ room.room_size }}</small><br>{% endif %}
+                            {% if room.bed_type %}<small class="text-muted">{{ room.bed_type }}</small>{% endif %}
+                        </td>
+                        <td>
+                            <strong class="text-success">KES {{ "{:,.0f}".format(room.price_per_night) }}</strong><br>
+                            <small class="text-muted">per night</small>
+                        </td>
+                        <td>
+                            {% if room.is_available %}
+                                <span class="badge bg-success">Available</span>
+                            {% else %}
+                                <span class="badge bg-danger">Unavailable</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ room.created_at.strftime('%Y-%m-%d') }}<br>
+                            <small class="text-muted">{{ room.created_at.strftime('%H:%M') }}</small>
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{{ url_for('admin_edit_room', room_id=room.id) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#amenities-{{ room.id }}">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if rooms.pages > 1 %}
+        <nav aria-label="Rooms pagination">
+            <ul class="pagination justify-content-center">
+                {% if rooms.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin_rooms', page=rooms.prev_num) }}">Previous</a>
+                    </li>
+                {% endif %}
+                
+                {% for page_num in rooms.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num != rooms.page %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_rooms', page=page_num) }}">{{ page_num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ page_num }}</span>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if rooms.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin_rooms', page=rooms.next_num) }}">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-bed text-muted mb-3" style="font-size: 4rem;"></i>
+            <h5 class="text-muted">No rooms found</h5>
+            <p class="text-muted">Start by adding your first room.</p>
+            <a href="{{ url_for('admin_add_room') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add Room
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Amenities Modals -->
+{% for room in rooms.items %}
+{% if room.amenities %}
+<div class="modal fade" id="amenities-{{ room.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ room.name }} - Amenities</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-wrap">
+                    {% for amenity in room.amenities.split(',') %}
+                    <span class="badge bg-light text-dark me-1 mb-1">{{ amenity.strip() }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+{% endblock %}

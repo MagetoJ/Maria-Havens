@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin - Maria Havens{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    
+    <style>
+        .admin-sidebar {
+            min-height: 100vh;
+            background: var(--dark-color);
+        }
+        .admin-content {
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+        .sidebar-item {
+            color: #adb5bd;
+            text-decoration: none;
+            padding: 12px 20px;
+            display: block;
+            transition: all 0.3s;
+        }
+        .sidebar-item:hover, .sidebar-item.active {
+            color: white;
+            background: var(--primary-color);
+        }
+    </style>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 px-0 admin-sidebar">
+                <div class="p-3">
+                    <h5 class="text-light">
+                        <i class="fas fa-hotel me-2"></i>Maria Havens Admin
+                    </h5>
+                </div>
+                
+                <nav class="nav flex-column">
+                    <a class="sidebar-item {% if request.endpoint == 'admin_dashboard' %}active{% endif %}" 
+                       href="{{ url_for('admin_dashboard') }}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a>
+                    <a class="sidebar-item {% if request.endpoint == 'admin_bookings' %}active{% endif %}" 
+                       href="{{ url_for('admin_bookings') }}">
+                        <i class="fas fa-calendar-check me-2"></i>Bookings
+                    </a>
+                    <a class="sidebar-item {% if request.endpoint in ['admin_rooms', 'admin_add_room', 'admin_edit_room'] %}active{% endif %}" 
+                       href="{{ url_for('admin_rooms') }}">
+                        <i class="fas fa-bed me-2"></i>Rooms
+                    </a>
+                    {% if current_user.is_super_admin %}
+                    <a class="sidebar-item {% if request.endpoint in ['admin_users', 'admin_add_user'] %}active{% endif %}" 
+                       href="{{ url_for('admin_users') }}">
+                        <i class="fas fa-users me-2"></i>Admin Users
+                    </a>
+                    {% endif %}
+                    <hr class="text-secondary my-2">
+                    <a class="sidebar-item" href="{{ url_for('index') }}" target="_blank">
+                        <i class="fas fa-external-link-alt me-2"></i>View Site
+                    </a>
+                    <a class="sidebar-item" href="{{ url_for('admin_logout') }}">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </a>
+                </nav>
+                
+                <div class="p-3 mt-auto">
+                    <small class="text-muted">
+                        Logged in as:<br>
+                        <strong class="text-light">{{ current_user.name }}</strong>
+                    </small>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 admin-content">
+                <!-- Top Bar -->
+                <div class="bg-white shadow-sm p-3 mb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">{% block page_title %}Admin Dashboard{% endblock %}</h4>
+                        <span class="text-muted">
+                            <i class="fas fa-user me-2"></i>{{ current_user.name }}
+                            {% if current_user.is_super_admin %}<span class="badge bg-danger ms-2">Super Admin</span>{% endif %}
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="container-fluid mb-4">
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                
+                <!-- Page Content -->
+                <div class="px-3">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

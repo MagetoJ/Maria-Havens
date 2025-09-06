@@ -1,0 +1,174 @@
+{% extends "admin/base.html" %}
+
+{% block page_title %}Booking Management{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5>Booking Inquiries</h5>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        {% if bookings.items %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Guest Details</th>
+                        <th>Room</th>
+                        <th>Dates</th>
+                        <th>Guests</th>
+                        <th>Status</th>
+                        <th>Submitted</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings.items %}
+                    <tr>
+                        <td>{{ booking.id }}</td>
+                        <td>
+                            <strong>{{ booking.guest_name }}</strong><br>
+                            <small class="text-muted">{{ booking.email }}</small><br>
+                            {% if booking.phone %}
+                            <small class="text-muted">{{ booking.phone }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ booking.room.name }}</strong><br>
+                            <small class="text-success">KES {{ "{:,.0f}".format(booking.room.price_per_night) }}/night</small>
+                        </td>
+                        <td>
+                            <strong>{{ booking.check_in.strftime('%Y-%m-%d') }}</strong><br>
+                            <small class="text-muted">to {{ booking.check_out.strftime('%Y-%m-%d') }}</small>
+                        </td>
+                        <td>
+                            {{ booking.adults }} adults
+                            {% if booking.children > 0 %}, {{ booking.children }} children{% endif %}
+                        </td>
+                        <td>
+                            {% if booking.status == 'pending' %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% elif booking.status == 'confirmed' %}
+                                <span class="badge bg-success">Confirmed</span>
+                            {% elif booking.status == 'cancelled' %}
+                                <span class="badge bg-danger">Cancelled</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ booking.created_at.strftime('%Y-%m-%d') }}<br>
+                            <small class="text-muted">{{ booking.created_at.strftime('%H:%M') }}</small>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    Actions
+                                </button>
+                                <ul class="dropdown-menu">
+                                    {% if booking.status == 'pending' %}
+                                    <li>
+                                        <form method="POST" action="{{ url_for('update_booking_status') }}" class="d-inline">
+                                            <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                                            <input type="hidden" name="status" value="confirmed">
+                                            <button type="submit" class="dropdown-item text-success">
+                                                <i class="fas fa-check me-2"></i>Confirm
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form method="POST" action="{{ url_for('update_booking_status') }}" class="d-inline">
+                                            <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                                            <input type="hidden" name="status" value="cancelled">
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="fas fa-times me-2"></i>Cancel
+                                            </button>
+                                        </form>
+                                    </li>
+                                    {% endif %}
+                                    {% if booking.special_requests %}
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#requests-{{ booking.id }}">
+                                            <i class="fas fa-eye me-2"></i>View Requests
+                                        </button>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if bookings.pages > 1 %}
+        <nav aria-label="Bookings pagination">
+            <ul class="pagination justify-content-center">
+                {% if bookings.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin_bookings', page=bookings.prev_num) }}">Previous</a>
+                    </li>
+                {% endif %}
+                
+                {% for page_num in bookings.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num != bookings.page %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('admin_bookings', page=page_num) }}">{{ page_num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ page_num }}</span>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if bookings.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin_bookings', page=bookings.next_num) }}">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-calendar-times text-muted mb-3" style="font-size: 4rem;"></i>
+            <h5 class="text-muted">No booking inquiries found</h5>
+            <p class="text-muted">New booking inquiries will appear here.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Special Requests Modals -->
+{% for booking in bookings.items %}
+{% if booking.special_requests %}
+<div class="modal fade" id="requests-{{ booking.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Special Requests - {{ booking.guest_name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>{{ booking.special_requests }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+{% endblock %}
