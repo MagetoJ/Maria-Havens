@@ -63,14 +63,14 @@ def booking():
                 if app.config['MAIL_USERNAME']:
                     room = Room.query.get(form.room_id.data)
                     msg = Message(
-                        'Booking Inquiry Confirmation - The Oasis Hotel & Spa',
+                        'Booking Inquiry Confirmation - Maria Havens',
                         recipients=[str(form.email.data)]
                     )
                     if room:
                         msg.body = f"""
 Dear {form.guest_name.data},
 
-Thank you for your booking inquiry at The Oasis Hotel & Spa.
+Thank you for your booking inquiry at Maria Havens.
 
 Booking Details:
 - Room: {room.name}
@@ -82,7 +82,7 @@ Booking Details:
 We will contact you within 24 hours to confirm your booking.
 
 Best regards,
-The Oasis Hotel & Spa Team
+The Maria Havens Team
                         """
                     mail.send(msg)
             except Exception as e:
@@ -119,13 +119,13 @@ def contact():
             try:
                 if app.config['MAIL_USERNAME']:
                     msg = Message(
-                        'Contact Inquiry Received - The Oasis Hotel & Spa',
+                        'Contact Inquiry Received - Maria Havens',
                         recipients=[str(form.email.data)]
                     )
                     msg.body = f"""
 Dear {form.name.data},
 
-Thank you for contacting The Oasis Hotel & Spa.
+Thank you for contacting Maria Havens.
 
 Your inquiry has been received and we will respond within 24 hours.
 
@@ -133,7 +133,7 @@ Subject: {form.subject.data}
 Message: {form.message.data}
 
 Best regards,
-The Oasis Hotel & Spa Team
+The Maria Havens Team
                     """
                     mail.send(msg)
             except Exception as e:

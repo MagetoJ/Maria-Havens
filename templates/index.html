@@ -7,8 +7,8 @@
     <div class="container position-relative z-2">
         <div class="row justify-content-center">
             <div class="col-lg-8">
-                <h1 class="display-3 fw-bold mb-4">Welcome to Paradise</h1>
-                <p class="lead mb-4">Experience luxury and tranquility at The Oasis Hotel & Spa. Where exceptional service meets stunning accommodations in an unforgettable setting.</p>
+                <h1 class="display-3 fw-bold mb-4">Welcome to Maria Havens</h1>
+                <p class="lead mb-4">Experience luxury and comfort at Maria Havens. Where exceptional service meets stunning accommodations in an unforgettable setting.</p>
                 <div class="hero-buttons">
                     <a href="{{ url_for('booking') }}" class="btn btn-primary btn-lg me-3">Book Your Stay</a>
                     <a href="{{ url_for('rooms') }}" class="btn btn-outline-light btn-lg">Explore Rooms</a>
@@ -82,7 +82,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
                                 <small class="text-muted">From</small>
-                                <h5 class="text-primary mb-0">${{ room.price_per_night }}<small>/night</small></h5>
+                                <h5 class="text-primary mb-0">KES {{ "{:,.0f}".format(room.price_per_night) }}<small>/night</small></h5>
                             </div>
                             <small class="text-muted">
                                 <i class="fas fa-users me-1"></i>{{ room.max_occupancy }} guests
@@ -159,8 +159,8 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8">
-                <h3 class="fw-bold mb-3">Ready to Experience Luxury?</h3>
-                <p class="lead mb-0">Book your perfect getaway today and discover why The Oasis Hotel & Spa is the destination of choice for discerning travelers.</p>
+                <h3 class="fw-bold mb-3">Ready to Experience Maria Havens?</h3>
+                <p class="lead mb-0">Book your perfect getaway today and discover why Maria Havens is the destination of choice for discerning travelers.</p>
             </div>
             <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
                 <a href="{{ url_for('booking') }}" class="btn btn-light btn-lg px-5">Book Now</a>
