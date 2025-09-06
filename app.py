@@ -49,8 +49,14 @@ login_manager.login_message = 'Please log in to access the admin area.'
 
 with app.app_context():
     # Import models to ensure tables are created
-    from models import Room, Amenity, BookingInquiry, ContactInquiry
+    from models import Room, Amenity, BookingInquiry, ContactInquiry, User
     db.create_all()
+
+# User loader for Flask-Login
+@login_manager.user_loader
+def load_user(user_id):
+    from models import User
+    return User.query.get(int(user_id))
 
 # Import routes after app is created
 from routes import *
