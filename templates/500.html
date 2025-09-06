@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - The Oasis Hotel & Spa{% endblock %}
+
+{% block content %}
+<section class="page-header d-flex align-items-center justify-content-center text-center text-white">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">500</h1>
+        <p class="lead">Server Error</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <i class="fas fa-tools text-muted mb-4" style="font-size: 5rem;"></i>
+                <h2 class="fw-bold mb-3">Something Went Wrong</h2>
+                <p class="text-muted mb-4">We're experiencing technical difficulties. Our team has been notified and is working to resolve the issue.</p>
+                <div>
+                    <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg me-3">Go Home</a>
+                    <a href="{{ url_for('contact') }}" class="btn btn-outline-primary btn-lg">Contact Support</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

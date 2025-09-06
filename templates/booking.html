@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block title %}Book Your Stay - The Oasis Hotel & Spa{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header d-flex align-items-center justify-content-center text-center text-white">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">Book Your Stay</h1>
+        <p class="lead">Submit your booking inquiry and we'll get back to you within 24 hours</p>
+    </div>
+</section>
+
+<!-- Booking Form Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow">
+                    <div class="card-body p-5">
+                        <h3 class="card-title text-center mb-4">Booking Inquiry Form</h3>
+                        
+                        <form method="POST" class="needs-validation" novalidate>
+                            {{ form.hidden_tag() }}
+                            
+                            <!-- Guest Information -->
+                            <div class="mb-4">
+                                <h5 class="text-primary mb-3">Guest Information</h5>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        {{ form.guest_name.label(class="form-label") }}
+                                        {{ form.guest_name(class="form-control") }}
+                                        {% for error in form.guest_name.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.email.label(class="form-label") }}
+                                        {{ form.email(class="form-control") }}
+                                        {% for error in form.email.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.phone.label(class="form-label") }}
+                                        {{ form.phone(class="form-control") }}
+                                        {% for error in form.phone.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Stay Details -->
+                            <div class="mb-4">
+                                <h5 class="text-primary mb-3">Stay Details</h5>
+                                <div class="row g-3">
+                                    <div class="col-md-12">
+                                        {{ form.room_id.label(class="form-label") }}
+                                        {{ form.room_id(class="form-select") }}
+                                        {% for error in form.room_id.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.check_in.label(class="form-label") }}
+                                        {{ form.check_in(class="form-control") }}
+                                        {% for error in form.check_in.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.check_out.label(class="form-label") }}
+                                        {{ form.check_out(class="form-control") }}
+                                        {% for error in form.check_out.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.adults.label(class="form-label") }}
+                                        {{ form.adults(class="form-control") }}
+                                        {% for error in form.adults.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.children.label(class="form-label") }}
+                                        {{ form.children(class="form-control") }}
+                                        {% for error in form.children.errors %}
+                                            <div class="text-danger small">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Special Requests -->
+                            <div class="mb-4">
+                                <h5 class="text-primary mb-3">Special Requests</h5>
+                                {{ form.special_requests.label(class="form-label") }}
+                                {{ form.special_requests(class="form-control", rows="4", placeholder="Please let us know if you have any special requests or requirements...") }}
+                                {% for error in form.special_requests.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg px-5">
+                                    <i class="fas fa-paper-plane me-2"></i>Submit Inquiry
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar with Information -->
+            <div class="col-lg-4 mt-5 mt-lg-0">
+                <div class="card border-0 bg-light h-100">
+                    <div class="card-body p-4">
+                        <h5 class="card-title mb-4">
+                            <i class="fas fa-info-circle text-primary me-2"></i>Booking Information
+                        </h5>
+                        
+                        <div class="mb-4">
+                            <h6 class="fw-bold">How it works:</h6>
+                            <ol class="ps-3">
+                                <li class="mb-2">Submit your booking inquiry using the form</li>
+                                <li class="mb-2">Receive confirmation email within minutes</li>
+                                <li class="mb-2">Our team will contact you within 24 hours</li>
+                                <li class="mb-2">Complete your booking with payment</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6 class="fw-bold">Need immediate assistance?</h6>
+                            <p class="small text-muted mb-2">Contact our reservations team:</p>
+                            <p class="mb-1"><i class="fas fa-phone text-primary me-2"></i>+1 (555) 123-4567</p>
+                            <p class="mb-3"><i class="fas fa-envelope text-primary me-2"></i>reservations@oasishotel.com</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6 class="fw-bold">Cancellation Policy:</h6>
+                            <p class="small text-muted">Free cancellation up to 48 hours before check-in. Contact us for more details.</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <a href="{{ url_for('rooms') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-bed me-2"></i>View Rooms
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Available Rooms Preview -->
+{% if rooms %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h3 class="fw-bold">Available Rooms & Suites</h3>
+            <p class="lead text-muted">Choose from our selection of premium accommodations</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for room in rooms[:3] %}
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        {% if room.image_url %}
+                            <img src="{{ room.image_url }}" class="img-fluid" alt="{{ room.name }}">
+                        {% else %}
+                            <i class="fas fa-bed text-muted" style="font-size: 3rem;"></i>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ room.name }}</h5>
+                        <p class="card-text text-muted small">{{ room.description[:80] }}{% if room.description|length > 80 %}...{% endif %}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="text-primary mb-0">${{ room.price_per_night }}/night</h6>
+                            <small class="text-muted">
+                                <i class="fas fa-users me-1"></i>{{ room.max_occupancy }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('rooms') }}" class="btn btn-outline-primary">View All Rooms</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+
+// Date validation
+document.addEventListener('DOMContentLoaded', function() {
+    const checkInDate = document.getElementById('check_in');
+    const checkOutDate = document.getElementById('check_out');
+    
+    if (checkInDate && checkOutDate) {
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        checkInDate.min = today;
+        checkOutDate.min = today;
+        
+        checkInDate.addEventListener('change', function() {
+            checkOutDate.min = this.value;
+            if (checkOutDate.value <= this.value) {
+                const nextDay = new Date(this.value);
+                nextDay.setDate(nextDay.getDate() + 1);
+                checkOutDate.value = nextDay.toISOString().split('T')[0];
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

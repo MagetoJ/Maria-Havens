@@ -1,0 +1,304 @@
+/* Custom CSS for The Oasis Hotel & Spa */
+
+:root {
+    --primary-color: #2c5aa0;
+    --secondary-color: #f8f9fa;
+    --accent-color: #17a2b8;
+    --dark-color: #343a40;
+    --light-color: #ffffff;
+}
+
+/* Global Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    letter-spacing: -0.5px;
+}
+
+/* Hero Section */
+.hero-section {
+    height: 70vh;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+}
+
+.hero-section .container {
+    z-index: 2;
+}
+
+.hero-buttons .btn {
+    border-radius: 50px;
+    padding: 15px 30px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Page Headers */
+.page-header {
+    height: 40vh;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    position: relative;
+    margin-top: 76px; /* Account for fixed navbar */
+}
+
+/* Cards */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* Room Cards */
+.room-image img {
+    object-fit: cover;
+}
+
+/* Gallery */
+.gallery-image-container {
+    overflow: hidden;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+}
+
+.gallery-image-container:hover .gallery-overlay {
+    opacity: 1;
+}
+
+.overlay-content h5 {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+/* Forms */
+.form-control, .form-select {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    padding: 12px 15px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.25);
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    border-radius: 10px;
+    padding: 12px 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: #1e3d6f;
+    border-color: #1e3d6f;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(44, 90, 160, 0.3);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    border-radius: 10px;
+    padding: 12px 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(44, 90, 160, 0.3);
+}
+
+/* Amenity Icons */
+.amenity-icon i {
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.amenity-icon:hover i {
+    transform: scale(1.1);
+    color: var(--accent-color) !important;
+}
+
+/* Footer */
+footer {
+    background: var(--dark-color) !important;
+}
+
+footer .social-links a {
+    transition: color 0.3s ease, transform 0.3s ease;
+    display: inline-block;
+}
+
+footer .social-links a:hover {
+    color: var(--primary-color) !important;
+    transform: scale(1.2);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-section {
+        height: 60vh;
+    }
+    
+    .page-header {
+        height: 30vh;
+    }
+    
+    .display-3 {
+        font-size: 2.5rem;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .hero-buttons .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-section {
+        height: 50vh;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+/* Utility Classes */
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.border-primary {
+    border-color: var(--primary-color) !important;
+}
+
+.object-cover {
+    object-fit: cover;
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #1e3d6f;
+}
+
+/* Contact Map */
+.map-container {
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    margin: 20px;
+}
+
+/* Accordion Customization */
+.accordion-button:not(.collapsed) {
+    background-color: rgba(44, 90, 160, 0.1);
+    color: var(--primary-color);
+}
+
+.accordion-button:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(44, 90, 160, 0.25);
+}
+
+/* Alert Customization */
+.alert {
+    border-radius: 10px;
+    border: none;
+    font-weight: 500;
+}
+
+/* Badge Customization */
+.badge {
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
