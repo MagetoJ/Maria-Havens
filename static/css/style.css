@@ -23,7 +23,8 @@ body {
 /* Hero Section */
 .hero-section {
     height: 70vh;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    background: linear-gradient(rgba(44, 90, 160, 0.7), rgba(23, 162, 184, 0.7)), 
+                url('../images/Modern_hotel_lobby_background_94296e7d.png') center/cover no-repeat;
     position: relative;
     overflow: hidden;
 }
@@ -53,7 +54,8 @@ body {
 /* Page Headers */
 .page-header {
     height: 40vh;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    background: linear-gradient(rgba(44, 90, 160, 0.8), rgba(23, 162, 184, 0.8)), 
+                url('../images/Luxury_hotel_room_interior_fdca1279.png') center/cover no-repeat;
     position: relative;
     margin-top: 76px; /* Account for fixed navbar */
 }
@@ -276,6 +278,27 @@ footer .social-links a:hover {
     border: 2px solid #e9ecef;
     border-radius: 15px;
     margin: 20px;
+    background: linear-gradient(rgba(44, 90, 160, 0.1), rgba(23, 162, 184, 0.1)), 
+                url('../images/Hotel_spa_and_pool_amenities_225586e3.png') center/cover no-repeat;
+}
+
+/* Amenities Section Background */
+.amenities-bg {
+    background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), 
+                url('../images/Hotel_spa_and_pool_amenities_225586e3.png') center/cover no-repeat fixed;
+}
+
+/* Modern Card Enhancements */
+.card-modern {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Rooms Section Background */
+.rooms-bg {
+    background: linear-gradient(rgba(248, 249, 250, 0.95), rgba(248, 249, 250, 0.95)), 
+                url('../images/Luxury_hotel_room_interior_fdca1279.png') center/cover no-repeat fixed;
 }
 
 /* Accordion Customization */

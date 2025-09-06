@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Database initialization script for The Oasis Hotel & Spa
+Database initialization script for Maria Havens
 Run this script to populate the database with sample data
 """
 
@@ -141,7 +141,7 @@ def create_sample_amenities():
 def main():
     """Main function to initialize database with sample data"""
     with app.app_context():
-        print("Initializing database for The Oasis Hotel & Spa...")
+        print("Initializing database for Maria Havens...")
         
         # Create all tables
         db.create_all()
