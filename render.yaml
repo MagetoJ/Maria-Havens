@@ -19,6 +19,18 @@ services:
         value: production
       - key: FLASK_APP
         value: main.py
+      - key: MAIL_SERVER
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: 587
+      - key: MAIL_USE_TLS
+        value: true
+      - key: MAIL_USERNAME
+        value: jabezmageto78@gmail.com
+      - key: MAIL_PASSWORD
+        value: kwjn rrno dnbm usxl
+      - key: MAIL_DEFAULT_SENDER
+        value: jabezmageto78@gmail.com
 
 databases:
   - name: maria-havens-db

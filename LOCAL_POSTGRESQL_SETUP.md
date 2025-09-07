@@ -21,7 +21,7 @@ Open PostgreSQL command line (psql) or use pgAdmin:
 ```sql
 -- Connect as postgres superuser
 CREATE DATABASE maria_havens_local;
-CREATE USER maria_havens_user WITH PASSWORD 'your_local_password';
+CREATE USER maria_havens_user WITH PASSWORD 'lokeshen@58';
 GRANT ALL PRIVILEGES ON DATABASE maria_havens_local TO maria_havens_user;
 ```
 
@@ -30,7 +30,7 @@ Create a `.env` file in your project root:
 
 ```env
 # Local PostgreSQL Configuration
-DATABASE_URL=postgresql://maria_havens_user:your_local_password@localhost:5432/maria_havens_local
+DATABASE_URL=postgresql://maria_havens_user:lokeshen@58@localhost:5432/maria_havens_local
 
 # Session Secret Key
 SESSION_SECRET=your-super-secret-session-key-change-this-in-production
@@ -39,27 +39,27 @@ SESSION_SECRET=your-super-secret-session-key-change-this-in-production
 FLASK_ENV=development
 FLASK_APP=main.py
 
-# Optional: Email configuration for testing
+# Email configuration
 MAIL_SERVER=smtp.gmail.com
 MAIL_PORT=587
 MAIL_USE_TLS=true
-MAIL_USERNAME=your-email@gmail.com
-MAIL_PASSWORD=your-app-password
-MAIL_DEFAULT_SENDER=noreply@mariahavens.com
+MAIL_USERNAME=jabezmageto78@gmail.com
+MAIL_PASSWORD=kwjn rrno dnbm usxl
+MAIL_DEFAULT_SENDER=jabezmageto78@gmail.com
 ```
 
 ## Example Local Database URLs
 
 Choose one of these formats for your `.env` file:
 
-### Standard Format
+### Standard Format (Recommended)
 ```
-DATABASE_URL=postgresql://maria_havens_user:yourpassword@localhost:5432/maria_havens_local
+DATABASE_URL=postgresql://maria_havens_user:lokeshen@58@localhost:5432/maria_havens_local
 ```
 
 ### If using default postgres user
 ```
-DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/maria_havens_local
+DATABASE_URL=postgresql://postgres:lokeshen@58@localhost:5432/maria_havens_local
 ```
 
 ### With specific host (if needed)
