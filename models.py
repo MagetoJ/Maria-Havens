@@ -1,12 +1,11 @@
-from app import db, login_manager
 from datetime import datetime
 from sqlalchemy import Text
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash
+from flask_sqlalchemy import SQLAlchemy
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+# Create a SQLAlchemy instance that will be shared
+db = SQLAlchemy()
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'

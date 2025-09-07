@@ -4,9 +4,10 @@ services:
     env: python
     plan: free
     buildCommand: |
-      pip install -r pyproject.toml
+      pip install --upgrade pip
+      pip install -r requirements.txt
       python init_db.py
-    startCommand: gunicorn --bind 0.0.0.0:$PORT main:app
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 120 main:app
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -16,6 +17,8 @@ services:
         generateValue: true
       - key: FLASK_ENV
         value: production
+      - key: FLASK_APP
+        value: main.py
 
 databases:
   - name: maria-havens-db

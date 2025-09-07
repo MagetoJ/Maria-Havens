@@ -1,21 +1,22 @@
 import os
 import logging
 from flask import Flask, render_template, request, redirect, url_for, flash
-from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from flask_login import LoginManager, login_required, current_user
-from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.security import generate_password_hash
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
-class Base(DeclarativeBase):
-    pass
+# Import db and models
+from models import db, User, Room, Amenity, BookingInquiry, ContactInquiry
 
-db = SQLAlchemy(model_class=Base)
 mail = Mail()
 login_manager = LoginManager()
 
@@ -47,19 +48,17 @@ login_manager.init_app(app)
 login_manager.login_view = 'admin_login'
 login_manager.login_message = 'Please log in to access the admin area.'
 
-with app.app_context():
-    # Import models to ensure tables are created
-    from models import Room, Amenity, BookingInquiry, ContactInquiry, User
-    db.create_all()
-
 # User loader for Flask-Login
 @login_manager.user_loader
 def load_user(user_id):
-    from models import User
     return User.query.get(int(user_id))
 
 # Import routes after app is created
 from routes import *
+
+with app.app_context():
+    # Create all tables
+    db.create_all()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

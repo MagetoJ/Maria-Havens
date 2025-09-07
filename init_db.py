@@ -8,12 +8,16 @@ import os
 import sys
 from datetime import datetime, date
 from decimal import Decimal
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Add the current directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from app import app, db
-from models import Room, Amenity, BookingInquiry, ContactInquiry, User
+from app import app
+from models import db, Room, Amenity, BookingInquiry, ContactInquiry, User
 from werkzeug.security import generate_password_hash
 
 def create_sample_rooms():
